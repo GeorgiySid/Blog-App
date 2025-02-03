@@ -1,20 +1,23 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react'
 import { Alert, Pagination, Spin } from 'antd'
-
 import './article-list.scss'
+import { useSearchParams } from 'react-router-dom'
+
 import ArticleItems from '../article-item'
 import BlogService from '../blog-service'
 
 const blogService = new BlogService()
 
 const ArticleList = () => {
-  const [currentPage, setCurrentPage] = useState(1)
+  const [searchParams, setSearchParams] = useSearchParams()
   const [articlesData, setArticlesData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [total, setTotal] = useState(0)
   const token = localStorage.getItem('token')
+
+  const currentPage = Number(searchParams.get('page')) || 1
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,10 +35,10 @@ const ArticleList = () => {
       }
     }
     fetchData()
-  }, [currentPage, token])
+  }, [currentPage, token, setSearchParams])
 
   const onPageChange = (page) => {
-    setCurrentPage(page)
+    setSearchParams({page : page.toString()})
   }
 
   const content = loading ? (
