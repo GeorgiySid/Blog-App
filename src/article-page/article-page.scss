@@ -1,0 +1,87 @@
+@import '../basic-styles/basic-styles.scss';
+.article-page{
+    width: 938px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow:$shadow;
+
+}
+.article{
+    border-radius: 0px;
+    &-title{
+        color:$blue;
+    }
+    &-description{
+        color:$gray;
+    }
+    &-head{
+        margin-bottom: 0;
+        margin-top: 0;
+        box-shadow: none;
+    }
+    &-main{
+        margin: 0;
+        display: flex;
+        background-color: $white;
+    }
+    &-body{
+        display: flex;
+        flex-wrap: wrap;
+        overflow: auto;
+        padding: 15px;
+        word-break: break-word;
+    }
+}
+pre{
+    white-space: pre-wrap;  
+    overflow-x: auto; 
+    width: 100%; 
+}  
+.button-container-head{
+    display: flex;
+    width: 150px;
+    justify-content: space-between;
+    position: absolute;
+    top:100px;
+    right: 10px;
+}
+
+.edit-article-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color:$green;
+    font-size: 14px;
+    border: 1px solid $green;
+    width: 65px;
+    height: 32px;
+    border-radius: 5px;
+    @media (hover:hover){
+        &:hover{
+            color:$darkGreen;
+            border-color:$darkGreen;
+        }
+    }
+}
+
+.delete-article-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color:$red;
+    font-size: 14px;
+    border: 1px solid $red;
+    width: 65px;
+    height: 32px;
+    background-color: $white;
+    border-radius: 5px;
+    @media (hover:hover){
+        &:hover{
+            color:$darkRed;
+            border-color:$darkRed;
+        }
+    }
+}

@@ -1,0 +1,17 @@
+.article-list{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.spin-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 85px;
+
+}
+.ant-select-selector, .ant-pagination-options{
+    display: none !important;
+}

@@ -1,0 +1,198 @@
+@import '../basic-styles/basic-styles.scss';
+
+.registration-cont{
+    width: 384px;
+    height: 600px;
+    background-color: $white;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 45px;
+    border-radius: 10px;
+    span{
+        width: 311px;
+        height: 28px;
+        color:rgba(38, 38, 38, 1);
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 28px;
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 30px;
+    }
+}
+.registration-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 0;
+}
+.reg{
+    &-username-force{
+        display: flex;
+        flex-direction: column;
+        color:$black;
+        font-size: 14px;
+        &__input{
+            width: 320px;
+            height: 40px;
+            font-size:16px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(217, 217, 217, 1);
+        }
+    }
+    &-email-force{
+        display: flex;
+        flex-direction: column;
+        color:$black;
+        font-size: 14px;
+        &__input{
+            width: 320px;
+            height: 40px;
+            font-size:16px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(217, 217, 217, 1);
+        }
+    }
+    &-password-force{
+        display: flex;
+        flex-direction: column;
+        color:$black;
+        font-size: 14px;
+        &__input{
+            width: 320px;
+            height: 40px;
+            font-size:16px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(217, 217, 217, 1);
+        }
+    }
+}
+.line{
+    margin: 0;
+    padding: 0;
+    width: 320px;
+    height: 0;
+    border-top:1px solid $grayForce;
+}
+.agree-cont{
+    width: 320px;
+    height: 52px;
+    margin-top: 10px;
+    list-style: none;
+    &__label{
+        width: 254px;
+        height: 44px;
+        font-size: 14px;
+        color:$checkDescr;
+        margin-left: 40px;
+    }
+}
+
+.create-cont{
+    list-style: none;
+    width: 320px;
+    height: 70px;
+    margin-top: 15px;
+    &__button{
+        width: 320px;
+        height: 40px;
+        background-color: $blue;
+        border: none;
+        border-radius: 4px;
+        color:$white;
+        font-size: 16px;
+        @media (hover:hover){
+            &:hover{
+                background-color: $darkBlue;
+            }
+        }
+    }
+    &__desc{
+        margin-top: 5px;
+        font-size: 12px;
+        width: 320px;
+        height: 20px;
+        text-align: center;
+        color:$gray;
+        a{
+            text-decoration: none;
+            color:$blue;
+            font-size: 12px;
+            @media (hover:hover){
+                &:hover{
+                    color:$darkBlue;
+                }
+            }
+        }
+    }
+}
+
+.agree-cont__label{
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    user-select: none; 
+    padding: 0;
+}
+
+input[type="checkbox"]{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    &:checked + span::before {
+        background-color: $blue;
+        border-color: $blue;
+      }
+}
+
+.custom-checkbox{
+    position: absolute;
+    top:0;
+    left: -50px;
+    height: 40px;
+    width: 40px;
+    border-radius: 3px;
+    background-image: url('../../public/Form.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+input[type="checkbox"]:checked + .custom-checkbox {
+    background-image: url("../../public/Checkbox.svg");
+    border: none;
+    scale: 1.2;
+}
+.error{
+    font-size: 12px;
+    color:red;
+    &-user{
+        position: absolute;
+        top:290px;
+    }
+    &-email{
+        position: absolute;
+        top:370px;
+    }
+    &-pass{
+        position: absolute;
+        top:450px;
+    }
+    &-pass-rep{
+        position: absolute;
+        top:530px;
+    }
+    &-checkbox{
+        position: absolute;
+        top:605px;
+    }
+}

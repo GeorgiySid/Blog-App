@@ -1,0 +1,114 @@
+@import '../basic-styles/basic-styles.scss';
+
+.app-header{
+    background-color: $white;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size:18px;
+        &__title{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 147px;
+            height: 56px;
+            text-decoration: none;
+            color: black;
+            @media (hover:hover){
+                &:hover{
+                    color:$green;
+                }
+            }
+        }
+        &__create-art{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color:$green;
+            width: 112px;
+            height: 32px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid $green;
+            @media (hover:hover){
+                &:hover{
+                    color:$darkGreen;
+                    border-color:$darkGreen;
+                }
+            }
+        }
+        &__registr-cont{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+        }
+        &__login{
+            text-decoration: none;
+            color: $black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 84px;
+            height: 35px;
+            @media(hover:hover){
+                &:hover{
+                    color:$green;
+                }
+            }
+        }
+        &__registr{
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 84px;
+            height: 35px;
+            border:1px solid $green;
+            border-radius: 5px;
+            color:$green;
+            @media (hover:hover){
+                &:hover{
+                    color:$darkGreen;
+                    border:1px solid $darkGreen;
+            }
+        }
+    }
+}
+
+.avatar-cont{
+    display: flex;
+    align-items: center;
+}
+.avatar-img{
+    border-radius: 50%;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 46px;
+    height: 46px;
+}
+.avatar-name{
+    margin-left: 20px;
+    text-decoration: none;
+    color: $black;
+}
+
+.log-out{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:$gray;
+    border: 1px solid $gray;
+    border-radius: 5px;
+    background-color: $white;
+    font-size: 18px;
+    width: 109px;
+    height: 51px;
+    @media (hover:hover){
+        &:hover{
+            background-color: $grayForce;
+        }
+    }
+}
