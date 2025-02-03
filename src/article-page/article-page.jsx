@@ -26,7 +26,6 @@ const ArticlePage = () => {
         setArticle(data.article)
         if (token) {
           const userData = await blogService.getUser(token)
-          console.log(userData, data)
           if (data.article.author.username === userData.user.username) {
             setCanEdit(true)
           }

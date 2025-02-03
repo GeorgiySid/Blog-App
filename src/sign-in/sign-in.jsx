@@ -23,7 +23,6 @@ const SignIn = () => {
   const onSubmit = async (data) => {
     setInvalid('')
     try {
-      console.log(data)
       const res = await blogService.signInUser({
         user: {
           email: data.email,
@@ -31,7 +30,6 @@ const SignIn = () => {
         },
       })
       localStorage.setItem('token', res.user.token)
-      console.log(res)
       navigate('/articles')
       window.location.reload()
     } catch (error) {

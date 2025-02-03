@@ -45,7 +45,7 @@ const NewArticle = () => {
         },
         token
       )
-      navigate('/article')
+      navigate('/articles')
     } catch (error) {
       console.error(error)
     }

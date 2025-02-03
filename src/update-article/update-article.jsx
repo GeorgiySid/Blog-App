@@ -32,7 +32,7 @@ const UpdateArticle = () => {
   })
   useEffect(() => {
     if (!token) {
-      navigate('/article')
+      navigate('/articles')
     }
     const fetchData = async () => {
       try {

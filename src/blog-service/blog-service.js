@@ -143,7 +143,6 @@ class BlogService {
         }
       }
       const data = res.json()
-      console.log(data)
       return data
     } catch (error) {
       console.error(error)
