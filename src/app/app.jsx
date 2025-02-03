@@ -4,6 +4,7 @@ import { createStore } from 'redux'
 import { useDispatch, useSelector } from 'react-redux'
 import './app.scss'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Alert } from 'antd'
 
 import AppHeader from '../app-header'
 import BlogService from '../blog-service'
@@ -43,13 +44,15 @@ const App = () => {
       <div className="main">
         <AppHeader />
         <Routes>
-          <Route path="/*" element={<ArticleList articles={articles} />} />
-          <Route path="/articles/:slug" element={<ArticlePage />} />
+          <Route path="*" element={<Alert message="Ошибка 404" type="error" showIcon />} />
+          <Route path="/" element={<ArticleList articles={articles} />} />
+          <Route path="/articles/" element={<ArticleList articles={articles} />} />
+          <Route path="/articles/:slug/" element={<ArticlePage />} />
           <Route path="/sign-up/" element={<Registration />} />
           <Route path="/sign-in/" element={<SignIn />} />
-          <Route path="/profile" element={<ProfileEdit />} />
-          <Route path="/new-article" element={<NewArticle />} />
-          <Route path="/articles/:slug/edit" element={<UpdateArticle />} />
+          <Route path="/profile/" element={<ProfileEdit />} />
+          <Route path="/new-article/" element={<NewArticle />} />
+          <Route path="/articles/:slug/edit/" element={<UpdateArticle />} />
         </Routes>
       </div>
     </BrowserRouter>
