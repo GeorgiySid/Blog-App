@@ -78,6 +78,7 @@ pre{
     height: 32px;
     background-color: $white;
     border-radius: 5px;
+    cursor: pointer;
     @media (hover:hover){
         &:hover{
             color:$darkRed;

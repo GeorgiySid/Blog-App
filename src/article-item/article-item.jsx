@@ -1,38 +1,23 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { format } from 'date-fns'
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 
+import { useFavoriteArticalMutation, useUnfavoriteArticalMutation } from '../blog-service/blog-service'
 import './article-item.scss'
-import BlogService from '../blog-service/blog-service'
 
-const blogService = new BlogService()
-const token = localStorage.getItem('token')
-const ArticleItems = ({ article }) => {
+const ArticleItems = ({ article, token }) => {
   const navigate = useNavigate()
+
   if (!article) {
     return null
   }
-  const [likesCount, setLikesCount] = useState(0)
-  const [isLiked, setIsLiked] = useState(false)
+  const [favoriteArtical] = useFavoriteArticalMutation()
+  const [unfavoriteArtical] = useUnfavoriteArticalMutation()
 
-  useEffect(() => {
-    if (article) {
-      setLikesCount(article.favoritesCount)
-      const checkIsLiked = async () => {
-        if (token) {
-          try {
-            const articleData = await blogService.getArticlesBySlug(article.slug, token)
-            setIsLiked(articleData.article.favorited)
-          } catch (error) {
-            console.error(error)
-          }
-        }
-      }
-      checkIsLiked()
-    }
-  }, [article, token])
+  const [likesCount, setLikesCount] = useState(article.favoritesCount || 0)
+  const [isLiked, setIsLiked] = useState(article.favorited || false)
 
   if (!article || typeof article !== 'object') {
     return null
@@ -45,9 +30,9 @@ const ArticleItems = ({ article }) => {
     }
     try {
       if (isLiked) {
-        await blogService.unfavoriteArtical(slug, token)
+        await unfavoriteArtical(slug)
       } else {
-        await blogService.favoriteArtical(slug, token)
+        await favoriteArtical(slug)
       }
       setIsLiked((prevIsLiked) => {
         const newIsLiked = !prevIsLiked

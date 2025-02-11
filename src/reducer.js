@@ -1,21 +1,38 @@
 /* eslint-disable prettier/prettier */
-import { SET_ARTICLES } from './actions'
+import { combineReducers } from '@reduxjs/toolkit'
+
+import { blogApi } from './blog-service/blog-service'
+
+export const SET_USER = 'SET_USER'
+export const CLEAR_USER = 'CLEAR_USER'
 
 const initialState = {
-  allArticles: [],
+  user: null,
+  token: localStorage.getItem('token'),
 }
 
-const reducer = (state = initialState, action) => {
-  switch(action.type) {
-  case SET_ARTICLES:{
-    return{
+const sessionReducer = (state = initialState, action) => {
+  switch (action.type) {
+  case SET_USER:
+    return {
       ...state,
-      allArticles: action
+      user: action.payload.user,
+      token: action.payload.token,
     }
-  }
+  case CLEAR_USER:
+    return {
+      ...state,
+      user: null,
+      token: null,
+    }
   default:
     return state
   }
 }
 
-export default reducer
+const rootReducer = combineReducers({
+  session: sessionReducer,
+  [blogApi.reducerPath]: blogApi.reducer,
+})
+
+export default rootReducer

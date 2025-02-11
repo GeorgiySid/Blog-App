@@ -1,22 +1,40 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-
-import BlogService from '../blog-service'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { Alert, Spin } from 'antd'
 
 import './new-article.scss'
+import {
+  useCreateArticleMutation,
+  useGetArticlesBySlugQuery,
+  useUpdateArticleMutation,
+} from '../blog-service/blog-service'
 
-const blogService = new BlogService()
-const token = localStorage.getItem('token')
-const NewArticle = () => {
+const ArticleForm = ({ token }) => {
   const {
     handleSubmit,
     register,
     formState: { errors },
     control,
-  } = useForm()
+    setValue,
+  } = useForm({
+    mode: 'onChange',
+  })
   const navigate = useNavigate()
+  const { slug } = useParams()
+  const location = useLocation()
+  const isEditMode = location.pathname.includes('/edit')
+
+  const [createArticle, { isLoading: isCreating, isError: isCreateError }] = useCreateArticleMutation()
+  const [updateArticle, { isLoading: isUpdating, isError: isUpdateError }] = useUpdateArticleMutation()
+  const {
+    data,
+    isLoading: isArticleLoading,
+    isError: isArticleError,
+  } = useGetArticlesBySlugQuery(slug, {
+    skip: !isEditMode || !slug,
+  })
   const { fields, append, remove } = useFieldArray({
     name: 'tags',
     control,
@@ -24,37 +42,66 @@ const NewArticle = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate('/article')
+      navigate('/sign-in')
+      return
     }
-    if (fields.length === 0) {
+
+    if (isEditMode && data && data.article) {
+      setValue('title', data.article.title)
+      setValue('description', data.article.description)
+      setValue('body', data.article.body)
+      if (data.article.tagList && data.article.tagList.length > 0) {
+        while (fields.length > 0) {
+          remove(0)
+        }
+        data.article.tagList.forEach((tag) => append({ value: tag }))
+      }
+    } else if (fields.length === 0) {
       append({ value: '' })
     }
-  }, [append, fields.length])
+  }, [isEditMode, append])
 
   const onSubmit = async (data) => {
-    try {
-      const tagList = data.tags.map((tag) => tag.value)
-      await blogService.newArticle(
-        {
-          article: {
-            title: data.title,
-            description: data.description,
-            body: data.body,
-            tagList: tagList,
-          },
-        },
-        token
-      )
-      navigate('/articles')
-    } catch (error) {
-      console.error(error)
+    const tagList = data.tags ? data.tags.map((tag) => tag.value) : []
+    const article = {
+      title: data.title,
+      description: data.description,
+      body: data.body,
+      tagList: tagList,
     }
+
+    try {
+      if (isEditMode) {
+        await updateArticle({ slug: slug, articleData: article }).unwrap()
+      } else {
+        await createArticle(article).unwrap()
+      }
+      navigate('/articles')
+      window.location.reload()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const loading = isArticleLoading || isCreating || isUpdating
+  const error = isArticleError || isCreateError || isUpdateError
+
+  if (loading) {
+    return (
+      <div className="spin-container">
+        <Spin size="large" tip="Загрузка..." />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <Alert message="Произошла ошибка при загрузке или сохранении данных" type="error" />
   }
 
   return (
     <div className="new-article-cont registration-cont">
       <ul className="new-article-list registration-list">
-        <span>Create new article</span>
+        <span>{isEditMode ? 'Edit article' : 'Create new article'}</span>
         <li className="title-force reg-email-force">
           Title
           <input
@@ -71,7 +118,7 @@ const NewArticle = () => {
           Short description
           <input
             type="text"
-            placeholder="Title"
+            placeholder="Description"
             className="description-force reg-email-force__input"
             {...register('description', {
               required: 'Описание обязательное',
@@ -118,8 +165,12 @@ const NewArticle = () => {
           </div>
         </li>
         <li className="send-cont create-cont create-cont-login">
-          <button className="send-cont__button create-cont__button" onClick={handleSubmit(onSubmit)}>
-            Send
+          <button
+            className="send-cont__button create-cont__button"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isCreating || isUpdating}
+          >
+            {isCreating || isUpdating ? 'Сохранение...' : 'Send'}
           </button>
         </li>
       </ul>
@@ -127,4 +178,4 @@ const NewArticle = () => {
   )
 }
 
-export default NewArticle
+export default ArticleForm

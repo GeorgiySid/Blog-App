@@ -1,38 +1,31 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect, useState } from 'react'
-import './app-header.scss'
+import React from 'react'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import BlogService from '../blog-service'
-const blogService = new BlogService()
+import { CLEAR_USER } from '../reducer'
+import './app-header.scss'
+import { useGetUserQuery } from '../blog-service/blog-service'
 
-const AppHeader = () => {
-  const [username, setUsername] = useState('')
-  const [avatar, setAvatar] = useState('/avatar.svg')
-  const token = localStorage.getItem('token')
+const AppHeader = ({ token }) => {
+  const dispatch = useDispatch()
+  const { data } = useGetUserQuery(undefined, {
+    skip: !token,
+  })
 
   const handleSignOut = () => {
     localStorage.removeItem('token')
+    dispatch({ type: CLEAR_USER })
     window.location.reload()
   }
 
-  const handleGetUser = async (token) => {
-    try {
-      const res = await blogService.getUser(token)
-      setUsername(res.user.username)
-      if (res.user.image) {
-        setAvatar(res.user.image)
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  let username = null
+  let avatar = '/avatar.svg'
 
-  useEffect(() => {
-    if (token) {
-      handleGetUser(token)
-    }
-  }, [token])
+  if (data) {
+    username = data.user.username
+    avatar = data.user.image || '/avatar.svg'
+  }
 
   return (
     <div className="app-header">

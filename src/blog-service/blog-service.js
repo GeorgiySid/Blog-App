@@ -1,249 +1,115 @@
 /* eslint-disable prettier/prettier */
-class BlogService {
-  getArticles = async (page = 1, token = null) => {
-    try {
-      const headers = {
-        'Content-Type': 'application/json',
-      }
-      if (token) {
-        headers.Authorization = `Token ${token}`
-      }
-      const res = await fetch(`https://blog-platform.kata.academy/api/articles?limit=5&offset=${(page - 1) * 5}`, {
-        headers,
-      })
-      if (!res.ok) {
-        throw new Error('Ошибка при получении статей')
-      }
-      const data = await res.json()
-      return data
-    } catch (error) {
-      console.error('Ошибка при получении статей', error)
-      throw error
-    }
-  }
-  getArticlesBySlug = async (slug, token = null) => {
-    try {
-      const headers = {
-        'Content-Type': 'application/json',
-      }
-      if (token) {
-        headers.Authorization = `Token ${token}`
-      }
-      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${slug}`, { headers })
-      if (!res.ok) {
-        throw new Error('Ошибка при получении статьи')
-      }
-      const data = await res.json()
-      return data
-    } catch (error) {
-      console.error('Ошибка при получении статьи', error)
-      throw error
-    }
-  }
-  registerUser = async (userData) => {
-    try {
-      const res = await fetch('https://blog-platform.kata.academy/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      })
-      if (!res.ok) {
-        const errorData = await res.text()
-        try {
-          const parsedError = JSON.parse(errorData)
-          throw new Error(JSON.stringify(parsedError))
-        } catch (error) {
-          throw new Error(errorData)
-        }
-      }
-      const data = await res.json()
-      return data
-    } catch (error) {
-      console.error('Ошибка при регистрации', error)
-      throw error
-    }
-  }
-  getUser = async (token = null) => {
-    try {
-      const headers = {
-        'Content-Type': 'application/json',
-      }
-      if (token) {
-        headers.Authorization = `Token ${token}`
-      }
-      const res = await fetch('https://blog-platform.kata.academy/api/user', { headers })
-      if (!res.ok) {
-        const errorData = await res.text()
-        try {
-          const parsedError = JSON.parse(errorData)
-          throw new Error(JSON.stringify(parsedError))
-        } catch (error) {
-          throw new Error(errorData)
-        }
-      }
-      const data = res.json()
-      return data
-    } catch (error) {
-      console.error(error)
-    }
-  }
-  signInUser = async (userData) => {
-    try {
-      const res = await fetch('https://blog-platform.kata.academy/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      })
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-      if (!res.ok) {
-        const errorData = await res.json()
-        throw new Error(
-          JSON.stringify({
-            status: res.status,
-            ...errorData,
-          })
-        )
-      }
-      const data = await res.json()
-      return data
-    } catch (error) {
-      if (error.message === 'Failed to fetch') {
-        throw new Error(
-          JSON.stringify({
-            status: 500,
-            message: 'Не удалось подключиться к серверу',
-          })
-        )
-      }
-      throw error
+const baseQuery = fetchBaseQuery({
+  baseUrl: 'https://blog-platform.kata.academy/api/',
+  prepareHeaders: (headers) => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      headers.set('Authorization', `Token ${token}`)
     }
-  }
-  updateUser = async (userData) => {
-    try {
-      const token = localStorage.getItem('token')
-      const res = await fetch('https://blog-platform.kata.academy/api/user', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-        body: JSON.stringify(userData),
-      })
-      if (!res.ok) {
-        const errorData = await res.text()
+    return headers
+  },
+})
+
+export const blogApi = createApi({
+  reducerPath: 'blogApi',
+  baseQuery,
+  endpoints: (builder) => ({
+    getArticles: builder.query({
+      query: (page = 1) => `articles?limit=5&offset=${(page - 1) * 5}`,
+      transformResponse: (response) => response,
+    }),
+    getArticlesBySlug: builder.query({
+      query: (slug) => `articles/${slug}`,
+      transformResponse: (response) => response,
+    }),
+    registerUser: builder.mutation({
+      query: (userData) => ({
+        url: 'users',
+        method: 'POST',
+        body: userData,
+      }),
+      transformErrorResponse: (response) => {
+        console.error('Error in registerUser:', response)
+        return { message: response.data?.errors || 'Registration failed' }
+      },
+    }),
+    getUser: builder.query({
+      query: () => 'user',
+      transformResponse: (response) => response,
+      transformErrorResponse: (response) => {
+        console.error('Error in getUser:', response)
+        return { status: response.status, message: response.data?.message || 'Failed to fetch user' }
+      },
+      async onQueryStarted(arg, { queryFulfilled }) {
         try {
-          const parsedError = JSON.parse(errorData)
-          throw new Error(JSON.stringify(parsedError))
+          const { data } = await queryFulfilled
+          localStorage.setItem('username', data.user.username)
         } catch (error) {
-          throw new Error(errorData)
+          console.log(error)
         }
-      }
-      const data = res.json()
-      return data
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
-  favoriteArtical = async (slug, token) => {
-    try {
-      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${slug}/favorite`, {
+      },
+    }),
+    signInUser: builder.mutation({
+      query: (userData) => ({
+        url: 'users/login',
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-      })
-      if (!res.ok) {
-        throw new Error()
-      }
-      const data = res.json()
-      return data
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
-  unfavoriteArtical = async (slug, token) => {
-    try {
-      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${slug}/favorite`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-      })
-      if (!res.ok) {
-        throw new Error()
-      }
-      const data = res.json()
-      return data
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
-  newArticle = async (articleData, token) => {
-    try {
-      const res = await fetch('https://blog-platform.kata.academy/api/articles', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-        body: JSON.stringify(articleData),
-      })
-      if (!res.ok) {
-        throw new Error()
-      }
-      const data = res.json()
-      return data
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
-  updateArticle = async (articleData, token, slug) => {
-    try {
-      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${slug}`, {
+        body: userData,
+      }),
+    }),
+    updateUser: builder.mutation({
+      query: (userData) => ({
+        url: 'user',
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-        body: JSON.stringify(articleData),
-      })
-      if (!res.ok) {
-        throw new Error()
-      }
-      const data = res.json()
-      return data
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
-  deleteArticle = async (token, slug) => {
-    try {
-      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${slug}`, {
+        body: userData,
+      }),
+    }),
+    favoriteArtical: builder.mutation({
+      query: (slug) => ({
+        url: `articles/${slug}/favorite`,
+        method: 'POST',
+      }),
+    }),
+    unfavoriteArtical: builder.mutation({
+      query: (slug) => ({
+        url: `articles/${slug}/favorite`,
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-      })
-      if (!res.ok) {
-        throw new Error()
-      }
-      return
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
-}
-export default BlogService
+      }),
+    }),
+    createArticle: builder.mutation({
+      query: (articleData) => ({
+        url: 'articles',
+        method: 'POST',
+        body: { article: articleData },
+      }),
+    }),
+    updateArticle: builder.mutation({
+      query: ({ slug, articleData }) => ({
+        url: `articles/${slug}`,
+        method: 'PUT',
+        body: { article: articleData },
+      }),
+    }),
+    deleteArticle: builder.mutation({
+      query: (slug) => ({
+        url: `articles/${slug}`,
+        method: 'DELETE',
+      }),
+    }),
+  }),
+})
+
+export const {
+  useGetArticlesQuery,
+  useGetArticlesBySlugQuery,
+  useRegisterUserMutation,
+  useGetUserQuery,
+  useSignInUserMutation,
+  useUpdateUserMutation,
+  useFavoriteArticalMutation,
+  useUnfavoriteArticalMutation,
+  useCreateArticleMutation,
+  useUpdateArticleMutation,
+  useDeleteArticleMutation,
+} = blogApi
