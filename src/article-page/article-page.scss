@@ -7,15 +7,25 @@
     box-shadow:$shadow;
 
 }
+.article-head__page{
+    display: flex;
+}
 .article{
     border-radius: 0px;
     &-title{
         color:$blue;
+        &__page{
+            min-height: 40px;
+            display: block;
+            word-break: break-word;
+        }
     }
     &-description{
         color:$gray;
     }
     &-head{
+        height: auto;
+        position: relative;
         margin-bottom: 0;
         margin-top: 0;
         box-shadow: none;
@@ -26,12 +36,32 @@
         background-color: $white;
     }
     &-body{
+        margin-top: 10px;
         display: flex;
         flex-wrap: wrap;
         overflow: auto;
         padding: 15px;
         word-break: break-word;
-    }
+    } 
+}
+.article-head__left-box{
+    display: flex;
+    width: 650px;
+    flex-direction: column;
+}
+.article-tags__page{
+    height: auto;
+    position: static;
+    overflow: visible;
+    margin-left: 15px;
+    margin-top: 10px;
+}
+.article-description__page{
+    height: auto;
+    position: static;
+    overflow: visible;
+    margin-left: 15px;
+    margin-top: 10px;
 }
 pre{
     white-space: pre-wrap;  

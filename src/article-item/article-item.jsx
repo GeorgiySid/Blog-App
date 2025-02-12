@@ -50,7 +50,7 @@ const ArticleItems = ({ article, token }) => {
   return (
     <div className="article">
       <div className="article-title">
-        <Link to={`/articles/${article.slug}`}>{article.title}</Link>
+        <Link  className="article-title__a" to={`/articles/${article.slug}`}>{article.title}</Link>
       </div>
       <div className="article-liked">
         <button className="article-liked__button" onClick={() => handleLike(article.slug)}>

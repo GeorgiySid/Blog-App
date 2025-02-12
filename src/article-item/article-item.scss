@@ -13,10 +13,15 @@
     position: relative;
     box-shadow: $shadow;
     &-title{
+        overflow: hidden;
         padding: 15px;
-        height: 28px;
         font-size: 20px;
-        a{
+        &__a{
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 550px;
             text-decoration: none;
             color:$blue;
             @media (hover:hover){
@@ -51,13 +56,14 @@
         display: flex;
         flex-wrap: wrap;
         width: 750px;
-        height: 22px;
+        height: 28px;
         overflow-y: auto;
         position: absolute;
         top:50px;
         left:15px;
     }
     &-tag{
+        margin-top: 5px;
         margin-right: 8px;
         min-width: 40px;
         height: 20px;
@@ -68,12 +74,14 @@
         align-items: center;
     }
     &-description{
-        overflow-y: auto;
+        overflow-x: hidden;
+        word-wrap: break-word;
+        text-overflow: ellipsis;
         position: absolute;
         top:80px;
         left:15px;
         width: 700px;
-        height: 50px;
+        height: 44px;
     }
     &-author{
         display: flex;

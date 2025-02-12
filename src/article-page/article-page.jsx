@@ -58,16 +58,18 @@ const ArticlePage = () => {
   } else {
     content = (
       <div className="article-page">
-        <div className="article-head article">
-          <div className="article-title">{data.article.title}</div>
-          <div className="article-tags">
-            {proessedTags.map((tag, index) => (
-              <span key={index} className="article-tag">
-                {tag}
-              </span>
-            ))}
+        <div className="article-head article article-head__page">
+          <div className='article-head__left-box'>
+            <div className="article-title article-title__page">{data.article.title}</div>
+            <div className="article-tags article-tags__page">
+              {proessedTags.map((tag, index) => (
+                <span key={index} className="article-tag">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div className="article-description article-description__page">{data.article.description}</div>
           </div>
-          <div className="article-description">{data.article.description}</div>
           <div className="article-author">
             <div className="left-box">
               <div className="username">{data.article.author.username}</div>
